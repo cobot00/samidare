@@ -31,8 +31,9 @@ config = {
  'auth_method' => 'private_key'
 }
 
-Samidare.generate_config(config)
-Samidare.embulk_run(config)
+client = Samidare::EmbulkClient.new
+client.generate_config(config)
+client.run(config)
 ```
 
 ## Contributing

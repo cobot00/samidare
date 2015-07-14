@@ -2,12 +2,12 @@ require 'samidare/version'
 require 'samidare/embulk_utility'
 
 module Samidare
-  class << self
+  class EmbulkClient
     def generate_config(config)
       Samidare::EmbulkUtility::ConfigGenerator.new(config).generate_config
     end
 
-    def embulk_run(config)
+    def run(config)
       db_infos = Samidare::EmbulkUtility::DBInfo.generate_db_infos
       table_infos = Samidare::EmbulkUtility::TableInfo.generate_table_infos
       db_infos.keys.each do |db_name|
