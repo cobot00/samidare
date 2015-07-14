@@ -1,0 +1,25 @@
+in:
+  type: mysql
+  user: <%= user %>
+  password: <%= password %>
+  database: <%= database %>
+  host: <%= host %>
+  query: |
+    <%= query %>
+out:
+  type: bigquery
+  project: <%= project %>
+  p12_keyfile_path: <%= p12_keyfile_path %>
+  service_account_email: <%= service_account_email %>
+  dataset: <%= dataset %>
+  table: <%= table_name %>
+  schema_path: <%= schema_path %>
+  auto_create_table: 1
+  path_prefix: <%= path_prefix %>
+  source_format: NEWLINE_DELIMITED_JSON
+  file_ext: .json.gz
+  delete_from_local_when_job_end: 1
+  formatter:
+    type: jsonl
+  encoders:
+  - {type: gzip}
