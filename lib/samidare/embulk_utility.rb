@@ -1,6 +1,7 @@
 require 'mysql2-cs-bind'
 require 'json'
 require 'yaml'
+require 'fileutils'
 require 'samidare/bigquery_utility'
 
 module Samidare

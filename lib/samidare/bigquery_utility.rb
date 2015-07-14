@@ -1,9 +1,38 @@
 require 'json'
 require 'erb'
 require 'big_query'
+require 'unindent'
 
 module Samidare
   class BigQueryUtility
+    CONTENTS = <<-EOS.unindent
+    in:
+      type: mysql
+      user: <%= user %>
+      password: <%= password %>
+      database: <%= database %>
+      host: <%= host %>
+      query: |
+        <%= query %>
+    out:
+      type: bigquery
+      project: <%= project %>
+      p12_keyfile_path: <%= p12_keyfile_path %>
+      service_account_email: <%= service_account_email %>
+      dataset: <%= dataset %>
+      table: <%= table_name %>
+      schema_path: <%= schema_path %>
+      auto_create_table: 1
+      path_prefix: <%= path_prefix %>
+      source_format: NEWLINE_DELIMITED_JSON
+      file_ext: .json.gz
+      delete_from_local_when_job_end: 1
+      formatter:
+        type: jsonl
+      encoders:
+      - {type: gzip}
+    EOS
+
     def initialize(config)
       @config = config.dup
     end
@@ -33,7 +62,8 @@ module Samidare
       schema_path = "#{@config['schema_dir']}/#{db_name}/#{table_info.name}.json"
       path_prefix = "/var/tmp/embulk_#{db_name}_#{table_info.name}"
 
-      File.open('lib/samidare/embulk_config.erb') { |f| ERB.new(f.read).result(binding) }
+      #File.open('lib/samidare/embulk_config.erb') { |f| ERB.new(f.read).result(binding) }
+      ERB.new(CONTENTS).result(binding)
     end
 
     def delete_table(dataset, table_name)
