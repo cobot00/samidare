@@ -19,7 +19,42 @@ Or install it yourself as:
     $ gem install samidare
 
 ## Usage
+Require `database.yml` and `table.yml`.  
+Below is a sample config file.
 
+#### database.yml
+```yml
+db01:
+  host: localhost
+  username: root
+  password:
+  database: production
+  bq_dataset: mysql_db01
+
+db02:
+  host: localhost
+  username: root
+  password:
+  database: production
+  bq_dataset: mysql_db02
+
+```
+
+#### table.yml
+```yml
+db01:
+  tables:
+    - name: users
+    - name: events
+    - name: hobbies
+
+db02:
+  tables:
+    - name: administrators
+    - name: configs
+```
+
+Samidare requires BigQuery parameters.
 ```ruby
 config = {
  'project_id' => 'BIGQUERY_PROJECT_ID',
