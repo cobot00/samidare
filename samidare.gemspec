@@ -20,14 +20,13 @@ Gem::Specification.new do |spec|
 
   spec.add_development_dependency 'bundler', '~> 1.7'
   spec.add_development_dependency 'rake', '~> 10.0'
-  spec.add_development_dependency 'rspec'
+  spec.add_development_dependency 'rspec', '>= 2.0'
 
-  spec.add_dependency 'unindent'
-  spec.add_dependency 'mysql2-cs-bind'
-  spec.add_dependency 'embulk-output-bigquery'
-  spec.add_dependency 'embulk-input-mysql'
-  spec.add_dependency 'embulk-output-mysql'
-  spec.add_dependency 'embulk-parser-jsonl'
-  spec.add_dependency 'embulk-formatter-jsonl'
-  spec.add_dependency 'bigquery'
+  spec.add_dependency 'unindent', '1.0'
+  spec.add_dependency 'mysql2-cs-bind', '0.0.6'
+  spec.add_dependency 'embulk-output-bigquery', '0.1.7'
+  spec.add_dependency 'embulk-input-mysql', '0.6.0'
+  spec.add_dependency 'embulk-parser-jsonl', '0.0.1'
+  spec.add_dependency 'embulk-formatter-jsonl', '0.1.4'
+  spec.add_dependency 'bigquery', '0.8.3'
 end
