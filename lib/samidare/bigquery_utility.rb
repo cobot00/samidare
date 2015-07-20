@@ -62,7 +62,6 @@ module Samidare
       schema_path = "#{@config['schema_dir']}/#{db_name}/#{table_info.name}.json"
       path_prefix = "/var/tmp/embulk_#{db_name}_#{table_info.name}"
 
-      #File.open('lib/samidare/embulk_config.erb') { |f| ERB.new(f.read).result(binding) }
       ERB.new(CONTENTS).result(binding)
     end
 

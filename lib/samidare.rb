@@ -27,7 +27,7 @@ module Samidare
           big_query.delete_table(bq_dataset, table.name)
           log "table: #{table.name} - deleted"
         rescue
-          log "table: #{table.name} - not exists"
+          log "table: #{table.name} - does not exist"
         end
 
         cmd = "embulk run #{ENV['EMBULK_CONFIG_DIR']}/#{db_name}/#{table.name}.yml"
