@@ -7,19 +7,21 @@ module Samidare
       Samidare::EmbulkUtility::ConfigGenerator.new(config).generate_config
     end
 
-    def run(config)
+    def run(config, target_tables = [])
       db_infos = Samidare::EmbulkUtility::DBInfo.generate_db_infos
       table_infos = Samidare::EmbulkUtility::TableInfo.generate_table_infos
       db_infos.keys.each do |db_name|
-        embulk_run(db_name, db_infos[db_name]['bq_dataset'], table_infos[db_name], config)
+        embulk_run(db_name, db_infos[db_name]['bq_dataset'], table_infos[db_name], config, target_tables)
       end
     end
 
     private
-    def embulk_run(db_name, bq_dataset, tables, config)
+    def embulk_run(db_name, bq_dataset, tables, config, target_tables)
       process_times = []
       big_query = Samidare::BigQueryUtility.new(config)
       tables.each do |table|
+        next unless target_table?(table.name, target_tables)
+
         start_time = Time.now
         log "table: #{table.name} - start"
 
@@ -42,6 +44,11 @@ module Samidare
       log '------------------------------------'
       log "db_name: #{db_name}"
       process_times.each { |process_time| log process_time }
+    end
+
+    def target_table?(table, target_tables)
+      return true if target_tables.empty?
+      target_tables.include?(table)
     end
 
     def log(message)
