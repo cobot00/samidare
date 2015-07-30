@@ -19,7 +19,7 @@ Or install it yourself as:
     $ gem install samidare
 
 ## Usage
-Require `database.yml` and `table.yml`.  
+Require `database.yml` and `table.yml`.
 Below is a sample config file.
 
 #### database.yml
@@ -27,18 +27,20 @@ Below is a sample config file.
 db01:
   host: localhost
   username: root
-  password:
+  password: pswd
   database: production
   bq_dataset: mysql_db01
 
 db02:
   host: localhost
   username: root
-  password:
+  password: pswd
   database: production
   bq_dataset: mysql_db02
 
 ```
+
+**Caution: Embulk doesn't allow no password for MySQL**
 
 #### table.yml
 ```yml
@@ -54,11 +56,11 @@ db02:
     - name: configs
 ```
 
-Samidare requires BigQuery parameters.
+Samidare requires BigQuery parameters like below.
 ```ruby
+[sample.rb]
 config = {
  'project_id' => 'BIGQUERY_PROJECT_ID',
- 'project_name' => 'BIGQUERY_PROJECT_NAME',
  'service_email' => 'SERVICE_ACCOUNT_EMAIL',
  'key' => '/etc/embulk/bigquery.p12',
  'schema_dir' => '/var/tmp/embulk/schema',
@@ -69,6 +71,41 @@ config = {
 client = Samidare::EmbulkClient.new
 client.generate_config(config)
 client.run(config)
+```
+
+```bash
+bundle exec ruby sample.rb
+```
+
+## Features
+#### daily snapshot
+BigQuery supports table wildcard expression of a specific set of daily tables, for example, `sales20150701` .  
+If you need daily snapshot of a table for BigQuery, use `daily_snapshot` option to `database.yml` or `table.yml` like below.  
+`daily_snapshot` option effects all tables in case of  `database.yml` .  
+On the other hand, only target table in `table.yml` .  
+**Daily part is determined by execute date.**
+
+```yml
+[database.yml]
+production:
+  host: localhost
+  username: root
+  password: pswd
+  database: production
+  bq_dataset: mysql
+  daily_snapshot: true
+```
+
+```yml
+[table.yml]
+production:
+  tables:
+    - name: users
+    - name: events
+      daily_snapshot: true
+    - name: hobbies
+
+Only `events` is renamed to `eventsYYYYMMDD` for BigQuery.
 ```
 
 ## Contributing
