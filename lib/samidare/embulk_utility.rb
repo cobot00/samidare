@@ -76,17 +76,6 @@ module Samidare
     end
 
     class DBInfo
-      attr_reader :name, :host, :username, :password, :database, :bq_dataset
-
-      def initialize(config)
-        @name = config['name']
-        @host = config['host']
-        @username = config['username']
-        @password = config['password']
-        @database = config['database']
-        @bq_dataset = config['bq_dataset']
-      end
-
       def self.generate_db_infos
         configs = YAML.load_file('database.yml')
         configs
@@ -108,6 +97,10 @@ module Samidare
 
       def name
         @config['name']
+      end
+
+      def daily_snapshot
+        @config['daily_snapshot'] || false
       end
     end
 

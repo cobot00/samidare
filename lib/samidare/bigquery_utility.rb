@@ -2,6 +2,7 @@ require 'json'
 require 'erb'
 require 'big_query'
 require 'unindent'
+require 'date'
 
 module Samidare
   class BigQueryUtility
@@ -35,6 +36,7 @@ module Samidare
 
     def initialize(config)
       @config = config.dup
+      @current_date = Date.today
     end
 
     def self.generate_schema(column_infos)
@@ -58,7 +60,7 @@ module Samidare
       p12_keyfile_path = @config['key']
       service_account_email = @config['service_email']
       dataset = db_info['bq_dataset']
-      table_name = table_info.name
+      table_name = actual_table_name(table_info.name, db_info['daily_snapshot'] || table_info.daily_snapshot)
       schema_path = "#{@config['schema_dir']}/#{db_name}/#{table_info.name}.json"
       path_prefix = "/var/tmp/embulk_#{db_name}_#{table_info.name}"
 
@@ -70,6 +72,11 @@ module Samidare
 
       bq = BigQuery::Client.new(@config)
       bq.delete_table(table_name)
+    end
+
+    def actual_table_name(table_name, daily_snapshot)
+      return table_name unless daily_snapshot
+      table_name + @current_date.strftime('%Y%m%d')
     end
   end
 end
