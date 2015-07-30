@@ -21,9 +21,24 @@ describe Samidare::EmbulkUtility::ColumnInfo do
       it { expect(subject).to eq 'integer' }
     end
 
+    context 'smallint' do
+      let(:data_type) { 'smallint' }
+      it { expect(subject).to eq 'integer' }
+    end
+
+    context 'mediumint' do
+      let(:data_type) { 'mediumint' }
+      it { expect(subject).to eq 'integer' }
+    end
+
     context 'bigint' do
       let(:data_type) { 'bigint' }
       it { expect(subject).to eq 'integer' }
+    end
+
+    context 'float' do
+      let(:data_type) { 'float' }
+      it { expect(subject).to eq 'float' }
     end
 
     context 'double' do
@@ -36,8 +51,18 @@ describe Samidare::EmbulkUtility::ColumnInfo do
       it { expect(subject).to eq 'float' }
     end
 
+    context 'char' do
+      let(:data_type) { 'char' }
+      it { expect(subject).to eq 'string' }
+    end
+
     context 'varchar' do
       let(:data_type) { 'varchar' }
+      it { expect(subject).to eq 'string' }
+    end
+
+    context 'tinytext' do
+      let(:data_type) { 'tinytext' }
       it { expect(subject).to eq 'string' }
     end
 

@@ -54,7 +54,7 @@ module Samidare
       password = db_info['password']
       database = db_info['database']
       query = Samidare::BigQueryUtility.generate_sql(table_info.name, column_infos)
-      project = @config['project_name']
+      project = @config['project_id']
       p12_keyfile_path = @config['key']
       service_account_email = @config['service_email']
       dataset = db_info['bq_dataset']

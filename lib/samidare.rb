@@ -32,7 +32,7 @@ module Samidare
           log "table: #{table.name} - does not exist"
         end
 
-        cmd = "embulk run #{ENV['EMBULK_CONFIG_DIR']}/#{db_name}/#{table.name}.yml"
+        cmd = "embulk run #{config['config_dir']}/#{db_name}/#{table.name}.yml"
         log "cmd: #{cmd}"
         result = system(cmd) ? 'success' : 'error'
 
