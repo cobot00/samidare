@@ -93,19 +93,19 @@ describe Samidare::EmbulkUtility::ColumnInfo do
     context 'datetime' do
       let(:column_name) { 'create_at' }
       let(:data_type) { 'datetime' }
-      it { expect(subject).to eq 'UNIX_TIMESTAMP(create_at) AS create_at' }
+      it { expect(subject).to eq 'UNIX_TIMESTAMP(`create_at`) AS `create_at`' }
     end
 
     context 'int' do
       let(:column_name) { 'id' }
       let(:data_type) { 'int' }
-      it { expect(subject).to eq 'id' }
+      it { expect(subject).to eq '`id`' }
     end
 
     context 'varchar' do
       let(:column_name) { 'explanation' }
       let(:data_type) { 'varchar' }
-      it { expect(subject).to eq 'explanation' }
+      it { expect(subject).to eq '`explanation`' }
     end
   end
 

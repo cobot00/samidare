@@ -141,17 +141,22 @@ module Samidare
       def converted_value
         if bigquery_data_type == 'timestamp'
           # time zone translate to UTC
-          "UNIX_TIMESTAMP(#{@column_name}) AS #{@column_name}"
+          "UNIX_TIMESTAMP(#{escaped_column_name}) AS #{escaped_column_name}"
         elsif data_type == 'tinyint'
           # for MySQL tinyint(1) problem
-          "CAST(#{@column_name} AS signed) AS #{@column_name}"
+          "CAST(#{escaped_column_name} AS signed) AS #{escaped_column_name}"
         else
-          @column_name
+          escaped_column_name
         end
       end
 
       def to_json(*a)
         { "name" => @column_name, "type" => bigquery_data_type }.to_json(*a)
+      end
+
+      private
+      def escaped_column_name
+        "`#{@column_name}`"
       end
     end
   end
