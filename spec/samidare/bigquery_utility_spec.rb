@@ -63,4 +63,23 @@ describe Samidare::BigQueryUtility do
       it { expect(subject).to eq table_name + Time.now.strftime('%Y%m%d') }
     end
   end
+
+  describe '#actual_table_name' do
+    before { Timecop.freeze(Time.now) }
+
+    after { Timecop.return }
+
+    subject { Samidare::BigQueryUtility.new({}).actual_table_name(table_name, daily_snapshot) }
+    let(:table_name) { 'users' }
+    let(:daily_snapshot) { false }
+
+    context 'do not use daily snapshot' do
+      it { expect(subject).to eq table_name }
+    end
+
+    context 'use daily snapshot' do
+      let(:daily_snapshot) { true }
+      it { expect(subject).to eq table_name + Time.now.strftime('%Y%m%d') }
+    end
+  end
 end
