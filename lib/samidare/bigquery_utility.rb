@@ -44,10 +44,12 @@ module Samidare
       "[\n" + json_body + "\n]\n"
     end
 
-    def self.generate_sql(table_name, column_infos)
+    def self.generate_sql(table_info, column_infos)
       columns = column_infos.map { |column_info| column_info.converted_value }
       sql = "SELECT " + columns.join(",")
-      sql << " FROM #{table_name}\n"
+      sql << " FROM #{table_info.name}\n"
+      sql << "WHERE #{table_info.condition}\n" if table_info.condition
+      sql
     end
 
     def generate_embulk_config(db_name, db_info, table_info, column_infos)
@@ -55,7 +57,7 @@ module Samidare
       user = db_info['username']
       password = db_info['password']
       database = db_info['database']
-      query = Samidare::BigQueryUtility.generate_sql(table_info.name, column_infos)
+      query = Samidare::BigQueryUtility.generate_sql(table_info, column_infos)
       project = @config['project_id']
       p12_keyfile_path = @config['key']
       service_account_email = @config['service_email']

@@ -102,6 +102,10 @@ module Samidare
       def daily_snapshot
         @config['daily_snapshot'] || false
       end
+
+      def condition
+        @config['condition']
+      end
     end
 
     class ColumnInfo
