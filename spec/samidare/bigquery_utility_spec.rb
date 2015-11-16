@@ -40,7 +40,7 @@ describe Samidare::BigQueryUtility do
 
     context 'has condition' do
       let(:table_info) { Samidare::EmbulkUtility::TableInfo.new({ 'name' => 'simple', 'condition' => 'created_at >= CURRENT_DATE() - INTERVAL 3 MONTH' }) }
-      let(:sql) { "SELECT `id`,`name`,UNIX_TIMESTAMP(`created_at`) AS `created_at` FROM simple\nWHERE created_at >= CURRENT_DATE() - INTERVAL 3 MONTH\n" }
+      let(:sql) { "SELECT `id`,`name`,UNIX_TIMESTAMP(`created_at`) AS `created_at` FROM simple WHERE created_at >= CURRENT_DATE() - INTERVAL 3 MONTH\n" }
       it { expect(subject).to eq sql }
     end
   end

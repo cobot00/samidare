@@ -47,8 +47,9 @@ module Samidare
     def self.generate_sql(table_info, column_infos)
       columns = column_infos.map { |column_info| column_info.converted_value }
       sql = "SELECT " + columns.join(",")
-      sql << " FROM #{table_info.name}\n"
-      sql << "WHERE #{table_info.condition}\n" if table_info.condition
+      sql << " FROM #{table_info.name}"
+      sql << " WHERE #{table_info.condition}" if table_info.condition
+      sql << "\n"
       sql
     end
 
