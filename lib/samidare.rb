@@ -6,12 +6,22 @@ require 'samidare/mysql'
 module Samidare
   class EmbulkClient
     def generate_config(bq_config)
-      database_configs = YAML.load_file('database.yml')
       Samidare::EmbulkUtility::ConfigGenerator.new.generate_config(database_configs, bq_config)
     end
 
-    def run(config, target_table_names = [])
-      Samidare::Embulk.new.run(config, target_table_names)
+    def run(bq_config, target_table_names = [])
+      error_tables = Samidare::Embulk.new.run(
+        database_configs,
+        Samidare::MySQL::TableConfig.generate_table_configs,
+        bq_config,
+        target_table_names)
+      # return batch status(true: all tables success)
+      error_tables.size == 0
+    end
+
+    private
+    def database_configs
+      YAML.load_file('database.yml')
     end
   end
 end
