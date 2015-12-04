@@ -1,36 +1,28 @@
-require 'mysql2-cs-bind'
-require 'json'
-require 'yaml'
-require 'fileutils'
-require 'samidare/bigquery_utility'
-
 module Samidare
   module EmbulkUtility
     class ConfigGenerator
-      def initialize(bq_config)
-        @bq_config = bq_config.dup
-      end
+      def generate_config(database_configs, bq_config)
+        bq_utility = BigQueryUtility.new(bq_config)
 
-      def generate_config
-        db_infos = EmbulkUtility::DBInfo.generate_db_infos
-        table_infos = EmbulkUtility::TableInfo.generate_table_infos
-        bq_utility = BigQueryUtility.new(@bq_config)
+        database_configs.keys.each do |db_name|
+          database_config = database_configs[db_name]
+          table_configs = all_table_configs[db_name]
+          mysql_client = MySQL::MySQLClient.new(database_config)
 
-        db_infos.keys.each do |db_name|
-          db_info = db_infos[db_name]
-          table_info = table_infos[db_name]
-          mysql_client = EmbulkUtility::MySQLClient.new(db_info)
-
-          table_info.each do |table|
+          table_configs.each do |table_config|
             write(
-              "#{@bq_config['schema_dir']}/#{db_name}",
-              "#{table.name}.json",
-              mysql_client.generate_bq_schema(table.name)
+              "#{bq_config['schema_dir']}/#{db_name}",
+              "#{table_config.name}.json",
+              mysql_client.generate_bq_schema(table_config.name)
             )
             write(
-              "#{@bq_config['config_dir']}/#{db_name}",
-              "#{table.name}.yml",
-              bq_utility.generate_embulk_config(db_name, db_info, table, mysql_client.column_infos(table.name))
+              "#{bq_config['config_dir']}/#{db_name}",
+              "#{table_config.name}.yml",
+              bq_utility.generate_embulk_config(
+                db_name,
+                database_config,
+                table_config,
+                mysql_client.columns(table_config.name))
             )
           end
         end
@@ -41,122 +33,9 @@ module Samidare
         FileUtils.mkdir_p(directory) unless FileTest.exist?(directory)
         File.write("#{directory}/#{file_name}", content)
       end
-    end
 
-    class MySQLClient
-      COLUMN_INFO_SQL = <<-SQL
-        SELECT column_name, data_type
-        FROM INFORMATION_SCHEMA.COLUMNS
-        WHERE table_schema = ?
-        AND table_name = ?
-        ORDER BY ordinal_position
-      SQL
-
-      def initialize(db_info)
-        @db_info = db_info
-      end
-
-      def client
-        @client ||= Mysql2::Client.new(
-          :host => @db_info['host'],
-          :username => @db_info['username'],
-          :password => @db_info['password'],
-          :database => @db_info['database'])
-      end
-
-      def generate_bq_schema(table_name)
-        infos = column_infos(table_name)
-        BigQueryUtility.generate_schema(infos)
-      end
-
-      def column_infos(table_name)
-        rows = client.xquery(COLUMN_INFO_SQL, @db_info['database'], table_name)
-        rows.map { |row| ColumnInfo.new(row['column_name'], row['data_type']) }
-      end
-    end
-
-    class DBInfo
-      def self.generate_db_infos
-        configs = YAML.load_file('database.yml')
-        configs
-      end
-    end
-
-    class TableInfo
-      def initialize(config)
-        @config = config.dup
-      end
-
-      def self.generate_table_infos
-        configs = YAML.load_file('table.yml')
-        configs.each_with_object({}) do |(db, db_info), table_infos|
-          table_infos[db] = db_info['tables'].map { |config| TableInfo.new(config) }
-          table_infos
-        end
-      end
-
-      def name
-        @config['name']
-      end
-
-      def daily_snapshot
-        @config['daily_snapshot'] || false
-      end
-
-      def condition
-        @config['condition']
-      end
-    end
-
-    class ColumnInfo
-      attr_reader :column_name, :data_type
-
-      TYPE_MAPPINGS = {
-        'int' => 'integer',
-        'tinyint' => 'integer',
-        'smallint' => 'integer',
-        'mediumint' => 'integer',
-        'bigint' => 'integer',
-        'float' => 'float',
-        'double' => 'float',
-        'decimal' => 'float',
-        'char' => 'string',
-        'varchar' => 'string',
-        'tinytext' => 'string',
-        'text' => 'string',
-        'date' => 'timestamp',
-        'datetime' => 'timestamp',
-        'timestamp' => 'timestamp'
-      }
-
-      def initialize(column_name, data_type)
-        @column_name = column_name
-        @data_type = data_type
-      end
-
-      def bigquery_data_type
-        TYPE_MAPPINGS[@data_type]
-      end
-
-      def converted_value
-        if bigquery_data_type == 'timestamp'
-          # time zone translate to UTC
-          "UNIX_TIMESTAMP(#{escaped_column_name}) AS #{escaped_column_name}"
-        elsif data_type == 'tinyint'
-          # for MySQL tinyint(1) problem
-          "CAST(#{escaped_column_name} AS signed) AS #{escaped_column_name}"
-        else
-          escaped_column_name
-        end
-      end
-
-      def to_json(*a)
-        { "name" => @column_name, "type" => bigquery_data_type }.to_json(*a)
-      end
-
-      private
-      def escaped_column_name
-        "`#{@column_name}`"
+      def all_table_configs
+        @all_table_configs ||= MySQL::TableConfig.generate_table_configs
       end
     end
   end

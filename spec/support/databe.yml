@@ -1,0 +1,13 @@
+db01:
+  host: localhost
+  username: root
+  password:
+  database: embulk
+  bq_dataset: mysql
+
+db02:
+  host: localhost
+  username: root
+  password:
+  database: embulk2
+  bq_dataset: mysql2

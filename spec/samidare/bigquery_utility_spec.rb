@@ -4,12 +4,12 @@ require 'timecop'
 
 describe Samidare::BigQueryUtility do
   describe '.generate_schema' do
-    subject { Samidare::BigQueryUtility.generate_schema(column_infos) }
+    subject { Samidare::BigQueryUtility.generate_schema(columns) }
 
-    let(:column_infos) { [
-      Samidare::EmbulkUtility::ColumnInfo.new('id', 'int'),
-      Samidare::EmbulkUtility::ColumnInfo.new('name', 'varchar'),
-      Samidare::EmbulkUtility::ColumnInfo.new('created_at', 'datetime')
+    let(:columns) { [
+      Samidare::MySQL::Column.new('id', 'int'),
+      Samidare::MySQL::Column.new('name', 'varchar'),
+      Samidare::MySQL::Column.new('created_at', 'datetime')
       ] }
     let(:schema_json) {
       <<-JSON.unindent
@@ -24,22 +24,22 @@ describe Samidare::BigQueryUtility do
   end
 
   describe '.generate_sql' do
-    subject { Samidare::BigQueryUtility.generate_sql(table_info, column_infos) }
+    subject { Samidare::BigQueryUtility.generate_sql(table_config, columns) }
 
-    let(:column_infos) { [
-      Samidare::EmbulkUtility::ColumnInfo.new('id', 'int'),
-      Samidare::EmbulkUtility::ColumnInfo.new('name', 'varchar'),
-      Samidare::EmbulkUtility::ColumnInfo.new('created_at', 'datetime')
+    let(:columns) { [
+      Samidare::MySQL::Column.new('id', 'int'),
+      Samidare::MySQL::Column.new('name', 'varchar'),
+      Samidare::MySQL::Column.new('created_at', 'datetime')
       ] }
 
     context 'no condition' do
-      let(:table_info) { Samidare::EmbulkUtility::TableInfo.new({ 'name' => 'simple' }) }
+      let(:table_config) { Samidare::MySQL::TableConfig.new({ 'name' => 'simple' }) }
       let(:sql) { "SELECT `id`,`name`,UNIX_TIMESTAMP(`created_at`) AS `created_at` FROM simple\n" }
       it { expect(subject).to eq sql }
     end
 
     context 'has condition' do
-      let(:table_info) { Samidare::EmbulkUtility::TableInfo.new({ 'name' => 'simple', 'condition' => 'created_at >= CURRENT_DATE() - INTERVAL 3 MONTH' }) }
+      let(:table_config) { Samidare::MySQL::TableConfig.new({ 'name' => 'simple', 'condition' => 'created_at >= CURRENT_DATE() - INTERVAL 3 MONTH' }) }
       let(:sql) { "SELECT `id`,`name`,UNIX_TIMESTAMP(`created_at`) AS `created_at` FROM simple WHERE created_at >= CURRENT_DATE() - INTERVAL 3 MONTH\n" }
       it { expect(subject).to eq sql }
     end

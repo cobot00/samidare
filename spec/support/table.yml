@@ -1,0 +1,11 @@
+db01:
+  tables:
+    - name: hoge
+      daily_snapshot: true
+    - name: simple
+
+db02:
+  tables:
+    - name: fuga
+    - name: with_condition
+      condition: created_at < CURRENT_DATE()

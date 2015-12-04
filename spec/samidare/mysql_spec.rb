@@ -1,5 +1,21 @@
 require 'spec_helper'
 
+describe Samidare::MySQL::TableConfig do
+
+  describe '.generate_table_configs' do
+    subject { Samidare::MySQL::TableConfig.generate_table_configs('spec/support/table.yml') }
+    let(:db01_hoge) { Samidare::MySQL::TableConfig.new({ 'name' => 'hoge', 'daily_snapshot' => true }) }
+    let(:db01_simple) { Samidare::MySQL::TableConfig.new({ 'name' => 'simple' }) }
+    let(:db02_fuga) { Samidare::MySQL::TableConfig.new({ 'name' => 'fuga' }) }
+    let(:db02_with_condition) { Samidare::MySQL::TableConfig.new({ 'name' => 'with_condition', 'condition' => 'created_at < CURRENT_DATE()' }) }
+
+    it { expect(subject['db01'][0]).to eq db01_hoge }
+    it { expect(subject['db01'][1]).to eq db01_simple }
+    it { expect(subject['db02'][0]).to eq db02_fuga }
+    it { expect(subject['db02'][1]).to eq db02_with_condition }
+  end
+end
+
 describe Samidare::MySQL::Column do
   let(:column) { Samidare::MySQL::Column.new(column_name, data_type) }
   let(:column_name) { 'id' }

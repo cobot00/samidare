@@ -39,33 +39,33 @@ module Samidare
       @current_date = Date.today
     end
 
-    def self.generate_schema(column_infos)
-      json_body = column_infos.map { |column_info| column_info.to_json }.join(",\n")
+    def self.generate_schema(columns)
+      json_body = columns.map { |column| column.to_json }.join(",\n")
       "[\n" + json_body + "\n]\n"
     end
 
-    def self.generate_sql(table_info, column_infos)
-      columns = column_infos.map { |column_info| column_info.converted_value }
+    def self.generate_sql(table_config, columns)
+      columns = columns.map { |column| column.converted_value }
       sql = "SELECT " + columns.join(",")
-      sql << " FROM #{table_info.name}"
-      sql << " WHERE #{table_info.condition}" if table_info.condition
+      sql << " FROM #{table_config.name}"
+      sql << " WHERE #{table_config.condition}" if table_config.condition
       sql << "\n"
       sql
     end
 
-    def generate_embulk_config(db_name, db_info, table_info, column_infos)
-      host = db_info['host']
-      user = db_info['username']
-      password = db_info['password']
-      database = db_info['database']
-      query = Samidare::BigQueryUtility.generate_sql(table_info, column_infos)
+    def generate_embulk_config(db_name, database_config, table_config, columns)
+      host = database_config['host']
+      user = database_config['username']
+      password = database_config['password']
+      database = database_config['database']
+      query = Samidare::BigQueryUtility.generate_sql(table_config, columns)
       project = @config['project_id']
       p12_keyfile_path = @config['key']
       service_account_email = @config['service_email']
-      dataset = db_info['bq_dataset']
-      table_name = actual_table_name(table_info.name, db_info['daily_snapshot'] || table_info.daily_snapshot)
-      schema_path = "#{@config['schema_dir']}/#{db_name}/#{table_info.name}.json"
-      path_prefix = "/var/tmp/embulk_#{db_name}_#{table_info.name}"
+      dataset = database_config['bq_dataset']
+      table_name = actual_table_name(table_config.name, database_config['daily_snapshot'] || table_config.daily_snapshot)
+      schema_path = "#{@config['schema_dir']}/#{db_name}/#{table_config.name}.json"
+      path_prefix = "/var/tmp/embulk_#{db_name}_#{table_config.name}"
 
       ERB.new(CONTENTS).result(binding)
     end
