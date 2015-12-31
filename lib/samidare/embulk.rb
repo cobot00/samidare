@@ -4,7 +4,11 @@ module Samidare
       error_tables = []
       database_configs.keys.each do |db_name|
         table_configs = target_table_configs(all_table_configs[db_name], target_table_names)
-        error_tables << run_by_database(db_name, table_configs, database_configs[db_name]['bq_dataset'], bq_config)
+        error_tables = error_tables + run_by_database(
+          db_name,
+          table_configs,
+          database_configs[db_name]['bq_dataset'],
+          bq_config)
       end
       error_tables
     end
