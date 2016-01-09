@@ -18,6 +18,17 @@ Or install it yourself as:
 
     $ gem install samidare
 
+## Embulk setup
+`Samidare` is utility for `Embulk` .
+You need to install `Embulk` and install some gems like below.
+
+```bash
+embulk gem install embulk-input-mysql
+embulk gem install embulk-output-bigquery
+embulk gem install embulk-parser-jsonl
+embulk gem install embulk-formatter-jsonl
+```
+
 ## Usage
 Require `database.yml` and `table.yml`.
 Below is a sample config file.
