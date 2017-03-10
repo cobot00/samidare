@@ -18,7 +18,7 @@ module Samidare
     out:
       type: bigquery
       project: <%= project %>
-      p12_keyfile_path: <%= p12_keyfile_path %>
+      p12_keyfile: <%= p12_keyfile_path %>
       service_account_email: <%= service_account_email %>
       dataset: <%= dataset %>
       table: <%= table_name %>
