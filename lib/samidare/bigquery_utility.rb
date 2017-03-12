@@ -18,7 +18,7 @@ module Samidare
     out:
       type: bigquery
       project: <%= project %>
-      p12_keyfile: <%= p12_keyfile_path %>
+      p12_keyfile: <%= p12_keyfile %>
       service_account_email: <%= service_account_email %>
       dataset: <%= dataset %>
       table: <%= table_name %>
@@ -60,7 +60,7 @@ module Samidare
       database = database_config['database']
       query = Samidare::BigQueryUtility.generate_sql(table_config, columns)
       project = @config['project_id']
-      p12_keyfile_path = @config['key']
+      p12_keyfile = @config['key']
       service_account_email = @config['service_email']
       dataset = database_config['bq_dataset']
       table_name = actual_table_name(table_config.name, database_config['daily_snapshot'] || table_config.daily_snapshot)
