@@ -23,10 +23,10 @@ Or install it yourself as:
 You need to install `Embulk` and install some gems like below.
 
 ```bash
-embulk gem install embulk-input-mysql
-embulk gem install embulk-output-bigquery
-embulk gem install embulk-parser-jsonl
-embulk gem install embulk-formatter-jsonl
+embulk gem install embulk-input-mysql --version 0.8.2
+embulk gem install embulk-output-bigquery --version 0.4.3
+embulk gem install embulk-parser-jsonl --version 0.2.0
+embulk gem install embulk-formatter-jsonl --version 0.1.4
 ```
 
 ## Usage
