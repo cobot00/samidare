@@ -4,11 +4,12 @@ module Samidare
       error_tables = []
       database_configs.keys.each do |db_name|
         table_configs = target_table_configs(all_table_configs[db_name], target_table_names)
-        error_tables = error_tables + run_by_database(
+        error_tables += run_by_database(
           db_name,
           table_configs,
           database_configs[db_name]['bq_dataset'],
-          bq_config)
+          bq_config
+        )
       end
       error_tables
     end
@@ -19,6 +20,7 @@ module Samidare
     end
 
     private
+
     def run_by_database(db_name, table_configs, bq_dataset, bq_config)
       process_times = []
       error_tables = []
@@ -43,7 +45,7 @@ module Samidare
           error_tables << table_config.name
         end
 
-        process_time = "table: #{table_config.name} - result: #{result}  #{sprintf('%10.1f', Time.now - start_time)}sec"
+        process_time = "table: #{table_config.name} - result: #{result}  #{format('%10.1f', Time.now - start_time)}sec"
         log process_time
         process_times << process_time
       end
@@ -55,7 +57,7 @@ module Samidare
     end
 
     def log(message)
-      puts "[#{Time.now.strftime("%Y-%m-%d %H:%M:%S")}] #{message}"
+      puts "[#{Time.now.strftime('%Y-%m-%d %H:%M:%S')}] #{message}"
     end
   end
 end

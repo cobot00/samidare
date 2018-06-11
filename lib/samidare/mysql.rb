@@ -7,7 +7,7 @@ require 'samidare/bigquery_utility'
 module Samidare
   module MySQL
     class MySQLClient
-      COLUMN_SQL = <<-SQL
+      COLUMN_SQL = <<-SQL.freeze
         SELECT column_name, data_type
         FROM INFORMATION_SCHEMA.COLUMNS
         WHERE table_schema = ?
@@ -21,10 +21,11 @@ module Samidare
 
       def client
         @client ||= Mysql2::Client.new(
-          :host => @database_config['host'],
-          :username => @database_config['username'],
-          :password => @database_config['password'],
-          :database => @database_config['database'])
+          host: @database_config['host'],
+          username: @database_config['username'],
+          password: @database_config['password'],
+          database: @database_config['database']
+        )
       end
 
       def generate_bq_schema(table_name)
@@ -55,9 +56,9 @@ module Samidare
         end
       end
 
-      def ==(another)
-        self.instance_variables.all? do |v|
-          self.instance_variable_get(v) == another.instance_variable_get(v)
+      def ==(other)
+        instance_variables.all? do |v|
+          instance_variable_get(v) == other.instance_variable_get(v)
         end
       end
     end
@@ -81,7 +82,7 @@ module Samidare
         'date' => 'timestamp',
         'datetime' => 'timestamp',
         'timestamp' => 'timestamp'
-      }
+      }.freeze
 
       def initialize(column_name, data_type)
         @column_name = column_name
@@ -105,10 +106,11 @@ module Samidare
       end
 
       def to_json(*a)
-        { "name" => @column_name, "type" => bigquery_data_type }.to_json(*a)
+        { 'name' => @column_name, 'type' => bigquery_data_type }.to_json(*a)
       end
 
       private
+
       def escaped_column_name
         "`#{@column_name}`"
       end
