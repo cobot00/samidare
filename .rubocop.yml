@@ -1,0 +1,104 @@
+AllCops:
+  TargetRubyVersion: 2.4.1
+  Include:
+    - '**/Gemfile'
+    - '**/Rakefile'
+    - '**/config.ru'
+  Exclude:
+    - 'db/**/*'
+    - 'config/**/*'
+    - 'script/**/*'
+    - 'vendor/**/*'
+    - 'bin/*'
+    - !ruby/regexp /old_and_unused\.rb$/
+
+AlignParameters:
+  Enabled: false
+
+AsciiComments:
+  Enabled: false
+
+BracesAroundHashParameters:
+  Enabled: false
+
+Bundler/OrderedGems:
+  Enabled: false
+
+ClassAndModuleChildren:
+  Enabled: false
+
+ClassLength:
+  Enabled: false
+
+Layout/AlignHash:
+  Enabled: false
+
+Layout/EndOfLine:
+  Enabled: false
+
+Layout/IndentHash:
+  Enabled: false
+
+Layout/MultilineArrayBraceLayout:
+  Enabled: false
+
+Layout/MultilineHashBraceLayout:
+  Enabled: false
+
+Layout/MultilineMethodCallIndentation:
+  Enabled: false
+
+Metrics/BlockLength:
+  Exclude:
+    - 'spec/**/*'
+    - 'config/routes.rb'
+    - 'app/jobs/**/*.rb'
+    - 'lib/tasks/**/*.rb'
+
+Metrics/AbcSize:
+  Enabled: false
+
+Metrics/CyclomaticComplexity:
+  Enabled: false
+
+Metrics/LineLength:
+  Enabled: false
+
+Metrics/MethodLength:
+  Enabled: false
+
+Metrics/PerceivedComplexity:
+  Enabled: false
+
+ModuleLength:
+  Enabled: false
+
+Style/ClassAndModuleCamelCase:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Style/GuardClause:
+  Enabled: false
+
+Style/Next:
+  Enabled: false
+
+Style/NumericLiterals:
+  Enabled: false
+
+Style/RaiseArgs:
+  Enabled: false
+
+Style/RedundantBegin:
+  Enabled: false
+
+Style/Lambda:
+  Enabled: false
+
+Rails/SkipsModelValidations:
+  Enabled: false
