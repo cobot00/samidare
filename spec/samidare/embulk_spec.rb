@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Samidare::Embulk do
   describe '#target_table_configs' do
-    subject { Samidare::Embulk.new(nil, nil).target_table_configs(table_configs, target_table_names) }
+    subject { Samidare::Embulk.new.target_table_configs(table_configs, target_table_names) }
 
     context 'all tables' do
       let(:table_hoge) { Samidare::MySQL::TableConfig.new({ 'name' => 'hoge' }) }
