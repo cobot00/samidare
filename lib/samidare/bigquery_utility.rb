@@ -40,13 +40,13 @@ module Samidare
     end
 
     def self.generate_schema(columns)
-      json_body = columns.map { |column| column.to_json }.join(",\n")
+      json_body = columns.map(&:to_json).join(",\n")
       "[\n" + json_body + "\n]\n"
     end
 
     def self.generate_sql(table_config, columns)
-      columns = columns.map { |column| column.converted_value }
-      sql = "SELECT " + columns.join(",")
+      columns = columns.map(&:converted_value)
+      sql = "SELECT #{columns.join(',')}"
       sql << " FROM #{table_config.name}"
       sql << " WHERE #{table_config.condition}" if table_config.condition
       sql << "\n"

@@ -22,13 +22,15 @@ module Samidare
                 db_name,
                 database_config,
                 table_config,
-                mysql_client.columns(table_config.name))
+                mysql_client.columns(table_config.name)
+              )
             )
           end
         end
       end
 
       private
+
       def write(directory, file_name, content)
         FileUtils.mkdir_p(directory) unless FileTest.exist?(directory)
         File.write("#{directory}/#{file_name}", content)
