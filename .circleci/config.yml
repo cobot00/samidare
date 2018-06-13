@@ -1,0 +1,36 @@
+version: 2
+jobs:
+  build:
+    working_directory: ~/samidare
+    docker:
+      - image: circleci/ruby:2.4.1
+        environment:
+          TZ: /usr/share/zoneinfo/Asia/Tokyo
+    steps:
+      - checkout
+
+      - restore_cache:
+          name: Restore bundle cache
+          key: samidare-{{ checksum "Gemfile.lock" }}
+
+      - run:
+          name: Run bundle install
+          command: bundle install --path vendor/bundle
+
+      - save_cache:
+          name: Store bundle cache
+          key: samidare-{{ checksum "Gemfile.lock" }}
+          paths:
+            - vendor/bundle
+
+      - run:
+          name: chmod +x ./lint.sh
+          command: chmod +x ./lint.sh
+
+      - run:
+          name: ./lint.sh
+          command: ./lint.sh
+
+      - run:
+          name: Run rspec
+          command: bundle exec rspec spec/
